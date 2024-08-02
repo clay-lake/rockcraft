@@ -7,23 +7,21 @@ In this tutorial you will create a simple Flask application and learn how to
 containerise it in a rock, using Rockcraft's ``flask-framework``
 :ref:`extension <flask-framework-reference>`.
 
-Setup
-=====
 
 .. include:: /reuse/tutorial/setup.rst
-
-Finally, create a new directory for this tutorial and go inside it:
-
-.. code-block:: bash
-
-   mkdir flask-hello-world
-   cd flask-hello-world
+|
 
 Create the Flask application
 ============================
 
-Start by creating the "Hello, world" Flask application that will be used for
-this tutorial.
+Start by creating a new project directory and changing into it. If you have
+optionally mounted ``~/host``, files created in ``flask-hello-world`` should be
+accessible in your host operating system's home directory.
+
+.. code-block:: bash
+
+   mkdir -p ~/host/flask-hello-world
+   cd ~/host/flask-hello-world
 
 Create a ``requirements.txt`` file, copy the following text into it and then
 save it:
@@ -352,37 +350,14 @@ You can now stop the container and remove the corresponding image:
     :end-before: [docs:stop-docker-updated-end]
     :dedent: 2
 
-Reset your environment
-======================
 
-You've reached the end of this tutorial.
+.. include:: /reuse/tutorial/cleanup.rst
 
-If you'd like to reset your working environment, you can simply run the
-following:
+However if you would like to remove the project files, they can simply be deleted from your home directory.
 
-.. literalinclude:: code/flask/task.yaml
-    :language: bash
-    :start-after: [docs:cleanup]
-    :end-before: [docs:cleanup-end]
-    :dedent: 2
+.. TODO: Should we have an example delete command? May be too OS dependant since we left the VM.
 
-.. collapse:: If using Multipass...
 
-    If you created an instance using Multipass, you can also clean it up.
-    Start by exiting it:
-
-    .. code-block:: bash
-
-        exit
-
-    And then you can proceed with its deletion:
-
-    .. code-block:: bash
-
-        multipass delete rock-dev
-        multipass purge
-
-----
 
 Troubleshooting
 ===============
@@ -394,6 +369,25 @@ your changes are not taking effect (e.g. the ``/time``
 :ref:`endpoint <update-flask-application>` is returning a
 404), try running ``rockcraft clean`` and pack the rock again with
 ``rockcraft pack``.
+
+
+**Command not found.**
+
+If the ``rockcraft``, ``docker``, or any other command is not found, ensure that you are
+operating within a ``rock-dev`` shell. You can check this by verifying your prompt
+starts with ``ubuntu@rock-dev``.
+
+If this is not the case, you can enter the shell from your host operating system by executing:
+
+.. code-block:: bash
+
+    multipass shell rock-dev
+
+
+If the problem persists, please revisit the setup section.
+
+.. TODO: create ref for setup section.
+
 
 .. _`lxd-docker-connectivity-issue`: https://documentation.ubuntu.com/lxd/en/latest/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-lxd-and-docker
 .. _`install-multipass`: https://multipass.run/docs/how-to-install-multipass
