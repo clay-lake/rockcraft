@@ -172,6 +172,14 @@ def _pack(
             base_layer_dir=base_layer_dir,
         )
 
+        new_image.set_huo_layer(
+            name=project.name,
+            tag=version,
+            summary=project.summary,
+            description=project.description,
+            base_layer_dir=base_layer_dir,
+        )
+
     if project.environment:
         new_image.set_environment(project.environment)
 

@@ -36,6 +36,7 @@ from rockcraft import errors, layers
 from rockcraft.architectures import SUPPORTED_ARCHS
 from rockcraft.constants import ROCK_CONTROL_DIR
 from rockcraft.pebble import Pebble
+from rockcraft.hidden_upgrade_overlay import HUOPart
 from rockcraft.utils import get_snap_command_path
 
 logger = logging.getLogger(__name__)
@@ -269,9 +270,9 @@ class Image:
                 )
             )
 
-        user_files[
-            "passwd"
-        ] += f"{username}:x:{uid}:{uid}::/{Pebble.PEBBLE_PATH}:/usr/bin/false\n"
+        user_files["passwd"] += (
+            f"{username}:x:{uid}:{uid}::/{Pebble.PEBBLE_PATH}:/usr/bin/false\n"
+        )
         user_files["group"] += f"{username}:x:{uid}:\n"
 
         with tempfile.TemporaryDirectory() as tmpfs:
@@ -388,6 +389,28 @@ class Image:
             cmd_params.extend(["--config.cmd", arg])
         _config_image(image_path, cmd_params)
         emit.progress(f"CMD set to {opt_args}")
+
+    def set_huo_layer(
+        self,
+        base_layer_dir: Path,
+        name: str,
+        tag: str,
+        summary: str,
+        description: str,
+    ) -> None:
+        # pylint: disable=too-many-arguments
+        pebble_layer_content: dict[str, Any] = {
+            "summary": summary,
+            "description": description,
+        }
+
+        huo = HUOPart()
+        with tempfile.TemporaryDirectory() as tmpfs:
+            tmpfs_path = Path(tmpfs)
+            huo.define_huo_layer(tmpfs_path, base_layer_dir, pebble_layer_content, name)
+
+            emit.progress("Writing new HUO layer file")
+            self.add_layer(tag, tmpfs_path)
 
     def set_pebble_layer(
         self,
